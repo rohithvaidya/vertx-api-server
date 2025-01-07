@@ -16,19 +16,42 @@ public class MainVerticle extends AbstractVerticle {
 
     //Using a post request to print the json request body
     router.post("/post-endpoint").handler(ctx -> {
+
+      String auth_header = ctx.request().getHeader("Authorization");
+      System.out.println(auth_header);
+      String base64Credentials = auth_header.substring("Basic ".length()).trim();
+      System.out.println(base64Credentials);
+      String credentials = new String(java.util.Base64.getDecoder().decode(base64Credentials));
+      System.out.println(credentials);
+
+      String username = credentials.split(":")[0];
+
       
       ctx.request().bodyHandler(body -> {
         String requestBody = body.toString();
         ctx.response()
           .putHeader("content-type", "application/json")
-          .end(requestBody);
+          .end("Hi "+username + " " + requestBody);
       });
     });
 
     router.get("/get-endpoint").handler(ctx -> {
+
+      String auth_header = ctx.request().getHeader("Authorization");
+      System.out.println(auth_header);
+      String base64Credentials = auth_header.substring("Basic ".length()).trim();
+      System.out.println(base64Credentials);
+      String credentials = new String(java.util.Base64.getDecoder().decode(base64Credentials));
+      System.out.println(credentials);
+      String username = credentials.split(":")[0];
+
+
       ctx.response()
         .putHeader("content-type", "text/plain")
-        .end("GET request successful!");
+        .end("Hi " + username + " GET request successful!");
+
+      
+
     });
 
     vertx.createHttpServer().requestHandler(router).listen(8888).onComplete(http -> {
