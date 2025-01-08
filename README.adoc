@@ -1,8 +1,6 @@
-= Vert.x API Server
+= Vert.x API Server - Demo
 
 image:https://img.shields.io/badge/vert.x-4.5.11-purple.svg[link="https://vertx.io"]
-
-This application was generated using http://start.vertx.io
 
 == Building
 
@@ -20,6 +18,15 @@ To run your application:
 ```
 ./mvnw clean compile exec:java
 ```
+
+== Scope of Demo
+
+This demo code covers the following, 
+
+1. Server in vert.x
+2. A POST and GET request is demonstrated, callable from postman
+3. Basic Auth implemented
+4. Testing using Junit and RestAssured, testing status code
 
 == Help
 
