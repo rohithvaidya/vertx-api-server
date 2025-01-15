@@ -31,14 +31,100 @@ public class TestMainVerticle {
     RestAssured.baseURI = "http://localhost:8888/";
   }
 
-  /*@Test
+  @Test
   public void test_get_endpoint(){
-    Response response = RestAssured.given().auth().preemptive().basic("rohith", "rohith").get("/get-endpoint");
-    
+    Response response = RestAssured.given().auth().preemptive().basic("rohith", "rohith").get("/view-device");
     //asserting whether status code is successful
     assertThat(response.getStatusCode(), equalTo(200));
 
-  }*/
+  }
 
+ // Test for Add Device
+    @Test
+    void testAddDevice_Success() {
+        String requestBody = "{\n" +
+                     "  \"deviceId\": \"123-asdasd-123\",\n" +
+                     "  \"Domain\": \"smart-transport\",\n" +
+                     "  \"state\": \"MH\",\n" +
+                     "  \"city\": \"Pune\",\n" +
+                     "  \"location\": {\n" +
+                     "    \"Type\": \"point\",\n" +
+                     "    \"Coordinates\": [34.56, 76.34]\n" +
+                     "  },\n" +
+                     "  \"deviceType\": \"smart-camera\"\n" +
+                     "}";
+
+        Response response = RestAssured.given()
+            .auth().preemptive().basic("rohith", "rohith")
+            .contentType("application/json")
+            .body(requestBody)
+            .post("/add-device");
+
+        assertThat(response.getStatusCode(), equalTo(201));
+    }
+
+    @Test
+    void testAddDevice_NoAuth() {
+         String requestBody = "{\n" +
+                     "  \"deviceId\": \"123-asdasd-123\",\n" +
+                     "  \"Domain\": \"smart-transport\",\n" +
+                     "  \"state\": \"MH\",\n" +
+                     "  \"city\": \"Pune\",\n" +
+                     "  \"location\": {\n" +
+                     "    \"Type\": \"point\",\n" +
+                     "    \"Coordinates\": [34.56, 76.34]\n" +
+                     "  },\n" +
+                     "  \"deviceType\": \"smart-camera\"\n" +
+                     "}";
+
+        Response response = RestAssured.given()
+            .contentType("application/json")
+            .body(requestBody)
+            .post("/add-device");
+
+        assertThat(response.getStatusCode(), equalTo(401));
+    }
+
+  @Test
+void testUpdateDevice_Success() {
+   //Updating city and state
+    String requestBody = "{\n" +
+                     "  \"deviceId\": \"123-asdasd-123\",\n" +
+                     "  \"Domain\": \"smart-transport\",\n" +
+                     "  \"state\": \"KA\",\n" +
+                     "  \"city\": \"Bangalore\",\n" +
+                     "  \"location\": {\n" +
+                     "    \"Type\": \"point\",\n" +
+                     "    \"Coordinates\": [34.56, 76.34]\n" +
+                     "  },\n" +
+                     "  \"deviceType\": \"smart-camera\"\n" +
+                     "}";
+
+    Response response = RestAssured.given()
+        .auth().preemptive().basic("rohith", "rohith")
+        .contentType("application/json")
+        .body(requestBody)
+        .put("/update-device/123-asdasd-123");
+
+    assertThat(response.getStatusCode(), equalTo(200));
+}
+
+@Test
+void testDeleteDevice_Success() {
+    Response response = RestAssured.given()
+        .auth().preemptive().basic("rohith", "rohith")
+        .delete("/delete-device/123-asdasd-123");
+
+    assertThat(response.getStatusCode(), equalTo(200));
+}
+
+@Test
+void testDeleteDevice_DeviceNotFound() {
+    Response response = RestAssured.given()
+        .auth().preemptive().basic("rohith", "rohith")
+        .delete("/delete-device/123-asdasd-1241242");
+
+    assertThat(response.getStatusCode(), equalTo(404));
+}
 
 }
