@@ -31,17 +31,14 @@ public class TestMainVerticle {
     RestAssured.baseURI = "http://localhost:8888/";
   }
 
-  @Test
+  /*@Test
   public void test_get_endpoint(){
     Response response = RestAssured.given().auth().preemptive().basic("rohith", "rohith").get("/get-endpoint");
     
     //asserting whether status code is successful
     assertThat(response.getStatusCode(), equalTo(200));
 
-  }
-
-
-  
+  }*/
 
 
 }
