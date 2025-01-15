@@ -27,6 +27,7 @@ This demo code covers the following,
 2. A POST and GET request is demonstrated, callable from postman
 3. Basic Auth implemented
 4. Testing using Junit and RestAssured, testing status code
+5. postgres integration
 
 == Help
 
