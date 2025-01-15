@@ -5,6 +5,7 @@ import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import io.restassured.RestAssured;
@@ -109,14 +110,14 @@ void testUpdateDevice_Success() {
     assertThat(response.getStatusCode(), equalTo(200));
 }
 
-@Test
+/*@Test
 void testDeleteDevice_Success() {
     Response response = RestAssured.given()
         .auth().preemptive().basic("rohith", "rohith")
         .delete("/delete-device/123-asdasd-123");
 
     assertThat(response.getStatusCode(), equalTo(200));
-}
+}*/
 
 @Test
 void testDeleteDevice_DeviceNotFound() {

@@ -136,17 +136,21 @@ public class MainVerticle extends AbstractVerticle {
     Pool client = Pool.pool(vertx, connectOptions, poolOptions);
 
     
+    Promise<Void> dbOperationPromise = Promise.promise();
 
-      ctx.request().bodyHandler(body -> {
-        String requestBody = body.toString();
-        JsonObject rbody = new JsonObject(requestBody);
-        if (rbody == null) {
-        ctx.response()
-          .setStatusCode(400)
-          .putHeader("content-type", "application/json")
-          .end("{\"error\": \"Invalid JSON body\"}");
-        return;
+    
+    ctx.request().bodyHandler(body -> {
+      String requestBody = body.toString();
+      JsonObject rbody = new JsonObject(requestBody);
+      if (rbody == null) {
+      ctx.response()
+        .setStatusCode(400)
+        .putHeader("content-type", "application/json")
+        .end("{\"error\": \"Invalid JSON body\"}");
+      return;
       }
+
+      
 
       String query = "INSERT INTO device (deviceId, Domain, state, city, location, deviceType) " +
                      "VALUES ($1, $2, $3, $4, $5, $6)";
@@ -166,19 +170,30 @@ public class MainVerticle extends AbstractVerticle {
           locationString,
           rbody.getString("deviceType")))
         .onSuccess(res -> {
-          ctx.response()
-            .setStatusCode(201)
-            .putHeader("content-type", "application/json")
-            .end("{\"message\": \"Device added successfully\"}");
+          dbOperationPromise.complete();
         })
         .onFailure(err -> {
-          ctx.response()
-            .setStatusCode(500)
-            .putHeader("content-type", "application/json")
-            .end("{\"error\": \"Failed to add device\"}");
+          dbOperationPromise.fail(err);
         });
+      
+      
+      dbOperationPromise.future().onComplete(promiseResult -> {
+            if (promiseResult.succeeded()) {
+                ctx.response()
+                    .setStatusCode(201)
+                    .putHeader("content-type", "application/json")
+                    .end("{\"message\": \"Device added successfully\"}");
+            } else {
+                ctx.response()
+                    .setStatusCode(500)
+                    .putHeader("content-type", "application/json")
+                    .end("{\"error\": \"Failed to add device\"}");
+            }
+      
+      
       });
 
+    });
     });
 
     router.put("/update-device/:id").handler(ctx -> {
