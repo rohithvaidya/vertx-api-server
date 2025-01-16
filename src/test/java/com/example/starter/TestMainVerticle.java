@@ -110,15 +110,6 @@ void testUpdateDevice_Success() {
     assertThat(response.getStatusCode(), equalTo(200));
 }
 
-/*@Test
-void testDeleteDevice_Success() {
-    Response response = RestAssured.given()
-        .auth().preemptive().basic("rohith", "rohith")
-        .delete("/delete-device/123-asdasd-123");
-
-    assertThat(response.getStatusCode(), equalTo(200));
-}*/
-
 @Test
 void testDeleteDevice_DeviceNotFound() {
     Response response = RestAssured.given()

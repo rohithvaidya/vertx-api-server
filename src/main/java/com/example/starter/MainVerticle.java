@@ -170,20 +170,24 @@ public class MainVerticle extends AbstractVerticle {
           locationString,
           rbody.getString("deviceType")))
         .onSuccess(res -> {
+          
           dbOperationPromise.complete();
         })
         .onFailure(err -> {
+          
           dbOperationPromise.fail(err);
         });
       
       
       dbOperationPromise.future().onComplete(promiseResult -> {
             if (promiseResult.succeeded()) {
+                client.close();
                 ctx.response()
                     .setStatusCode(201)
                     .putHeader("content-type", "application/json")
                     .end("{\"message\": \"Device added successfully\"}");
             } else {
+                client.close();
                 ctx.response()
                     .setStatusCode(500)
                     .putHeader("content-type", "application/json")
@@ -195,6 +199,103 @@ public class MainVerticle extends AbstractVerticle {
 
     });
     });
+
+
+    router.post("/async-add-device").handler(ctx -> {
+
+      if(ctx.request().getHeader("Authorization") != null){
+        String auth_header = ctx.request().getHeader("Authorization");
+        System.out.println(auth_header);
+        String base64Credentials = auth_header.substring("Basic ".length()).trim();
+        System.out.println(base64Credentials);
+        String credentials = new String(java.util.Base64.getDecoder().decode(base64Credentials));
+        System.out.println(credentials);
+        username = credentials.split(":")[0];
+      }
+      else{
+        ctx.response()
+        .setStatusCode(401)
+        .putHeader("content-type", "application/json")
+        .end("{\"error\":\"No Auth\"}");
+      }
+
+      ctx.request().bodyHandler(body -> {
+      String requestBody = body.toString();
+      JsonObject rbody = new JsonObject(requestBody);
+      if (rbody == null) {
+      ctx.response()
+        .setStatusCode(400)
+        .putHeader("content-type", "application/json")
+        .end("{\"error\": \"Invalid JSON body\"}");
+      return;
+      }
+      
+
+      ctx.response()
+                    .putHeader("content-type", "text/plain")
+                    .end("Request received! View device in 2 min");
+
+      Promise<Void> dbOperationPromise = Promise.promise();
+
+      PgConnectOptions connectOptions = new PgConnectOptions()
+      .setPort(5432)
+      .setHost("localhost")
+      .setDatabase("postgres")
+      .setUser("postgres")
+      .setPassword("");
+
+    
+    PoolOptions poolOptions = new PoolOptions()
+      .setMaxSize(5);
+
+    
+    Pool client = Pool.pool(vertx, connectOptions, poolOptions);
+
+      String query = "INSERT INTO device (deviceId, Domain, state, city, location, deviceType) " +
+                     "VALUES ($1, $2, $3, $4, $5, $6)";
+
+      JsonObject location = rbody.getJsonObject("location");
+      String locationString = location != null ? location.encode() : null;
+
+      System.out.println(rbody);
+      System.out.println(locationString);
+
+      
+      
+      vertx.setTimer(2 * 60 * 1000, id -> {
+                System.out.println("2 min processing time completed!");
+                client.preparedQuery(query)
+        .execute(Tuple.of(
+          rbody.getString("deviceId"),
+          rbody.getString("Domain"),
+          rbody.getString("state"),
+          rbody.getString("city"),
+          locationString,
+          rbody.getString("deviceType")))
+        .onSuccess(res -> {
+        
+          dbOperationPromise.complete();
+        })
+        .onFailure(err -> {
+          dbOperationPromise.fail(err);
+        });
+            });
+      
+      dbOperationPromise.future().onComplete(promiseResult -> {
+            if (promiseResult.succeeded()) {
+                client.close();
+                System.out.println("User device added successfully!");
+            } else {
+                client.close();
+                System.out.println("Add user device failed!");
+            }
+    
+      });
+
+    });
+    });
+
+
 
     router.put("/update-device/:id").handler(ctx -> {
     if (ctx.request().getHeader("Authorization") != null) {
@@ -263,12 +364,14 @@ public class MainVerticle extends AbstractVerticle {
                 rbody.getString("deviceType"),
                 deviceId))
             .onSuccess(res -> {
+                client.close();
                 ctx.response()
                    .setStatusCode(200)
                    .putHeader("content-type", "application/json")
                    .end("{\"message\": \"Device updated successfully\"}");
             })
             .onFailure(err -> {
+                client.close();
                 ctx.response()
                    .setStatusCode(500)
                    .putHeader("content-type", "application/json")
