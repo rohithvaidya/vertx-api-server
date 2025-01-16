@@ -161,6 +161,49 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "http://localhost:8888/async-add-device",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "rohith",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "rohith",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceId\":\"124-asdasd-123\",\r\n  \"Domain\":\"smart-transport\",\r\n  \"state\":\"MH\",\r\n  \"city\":\"Pune\",\r\n  \"location\":{\r\n      \"Type\":\"point\",\r\n      \"Coordinates\":[34.56,76.34]\r\n    },\r\n  \"deviceType\":\"smart-camera\"\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8888/async-add-device",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"async-add-device"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
