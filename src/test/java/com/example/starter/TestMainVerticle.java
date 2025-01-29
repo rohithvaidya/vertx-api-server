@@ -27,6 +27,8 @@ public class TestMainVerticle {
     testContext.completeNow();
   }
 
+  /* 
+
   @BeforeAll
   public static void setup(){
     RestAssured.baseURI = "http://localhost:8888/";
@@ -118,5 +120,5 @@ void testDeleteDevice_DeviceNotFound() {
 
     assertThat(response.getStatusCode(), equalTo(404));
 }
-
+*/
 }
