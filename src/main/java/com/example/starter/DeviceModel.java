@@ -24,7 +24,7 @@ public class DeviceModel {
             .setHost("localhost")
             .setDatabase("postgres")
             .setUser("postgres")
-            .setPassword("rohith20");
+            .setPassword("");
 
         PoolOptions poolOptions = new PoolOptions().setMaxSize(5);
         this.client = Pool.pool(vertx, connectOptions, poolOptions);
