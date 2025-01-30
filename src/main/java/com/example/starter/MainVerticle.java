@@ -15,7 +15,7 @@ public class MainVerticle extends AbstractVerticle {
 
         DeviceService deviceService = new DeviceModel(vertx);
       new ServiceBinder(vertx)
-        .setAddress("service.address")
+        .setAddress("services.address")
         .register(DeviceService.class, deviceService);
 
         DeviceController deviceController = new DeviceController(vertx);

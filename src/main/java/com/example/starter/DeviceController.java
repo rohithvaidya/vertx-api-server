@@ -13,7 +13,7 @@ public class DeviceController {
     private final DeviceService deviceService;
 
     public DeviceController(Vertx vertx) {
-        this.deviceService = new DeviceServiceVertxEBProxy(vertx, "services.address");
+        this.deviceService = DeviceService.createProxy(vertx, "services.address");
     }
 
     public void getAllDevices(RoutingContext ctx) {

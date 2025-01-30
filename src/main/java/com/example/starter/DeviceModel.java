@@ -26,7 +26,7 @@ public class DeviceModel implements DeviceService {
             .setHost("localhost")
             .setDatabase("postgres")
             .setUser("postgres")
-            .setPassword(""); //remove-secret
+            .setPassword("rohith20"); //remove-secret
 
         PoolOptions poolOptions = new PoolOptions().setMaxSize(5);
         this.client = Pool.pool(vertx, connectOptions, poolOptions);
