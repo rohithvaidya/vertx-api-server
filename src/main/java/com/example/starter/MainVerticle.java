@@ -4,6 +4,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.serviceproxy.ServiceBinder;
 
 public class MainVerticle extends AbstractVerticle {
 
@@ -11,6 +12,11 @@ public class MainVerticle extends AbstractVerticle {
     public void start(Promise<Void> startPromise) throws Exception {
         Router router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
+
+        DeviceService deviceService = new DeviceModel(vertx);
+      new ServiceBinder(vertx)
+        .setAddress("service.address")
+        .register(DeviceService.class, deviceService);
 
         DeviceController deviceController = new DeviceController(vertx);
 

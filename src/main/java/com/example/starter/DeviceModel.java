@@ -1,7 +1,9 @@
 package com.example.starter;
 
+import com.google.gson.Gson;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.Json;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.sqlclient.Pool;
 import io.vertx.sqlclient.PoolOptions;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DeviceModel {
+public class DeviceModel implements DeviceService {
 
     private final Pool client;
 
@@ -24,17 +26,17 @@ public class DeviceModel {
             .setHost("localhost")
             .setDatabase("postgres")
             .setUser("postgres")
-            .setPassword("");
+            .setPassword(""); //remove-secret
 
         PoolOptions poolOptions = new PoolOptions().setMaxSize(5);
         this.client = Pool.pool(vertx, connectOptions, poolOptions);
     }
 
-    public Future<List<Map<String, Object>>> getAllDevices() {
+    public Future<List<String>> getAllDevices() {
         return client.query("SELECT * FROM device")
             .execute()
             .map(rows -> {
-                List<Map<String, Object>> devices = new ArrayList<>();
+                List<String> devices = new ArrayList<>();
                 for (Row row : rows) {
                     Map<String, Object> device = Map.of(
                         "deviceID", row.getValue(0),
@@ -44,7 +46,9 @@ public class DeviceModel {
                         "location", row.getValue(4),
                         "deviceType", row.getValue(5)
                     );
-                    devices.add(device);
+                  Gson gson = new Gson();
+                  String json = gson.toJson(device);
+                    devices.add(json);
                 }
                 return devices;
             });

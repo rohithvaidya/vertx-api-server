@@ -60,6 +60,24 @@
         <version>2.1</version>
     </dependency>
 
+
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-service-proxy</artifactId>
+      <version>4.5.12</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-codegen</artifactId>
+      <version>4.5.12</version>
+      <classifier>processor</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+
+
     <dependency>
         <groupId>io.rest-assured</groupId>
         <artifactId>json-path</artifactId>
@@ -107,7 +125,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <release>11</release>
+           <release>11</release>
         </configuration>
       </plugin>
       <plugin>
@@ -171,7 +189,7 @@
         </execution>
       </executions>
     </plugin>
-    
+
     </plugins>
   </build>
 

@@ -10,14 +10,14 @@ import java.util.Map;
 
 public class DeviceController {
 
-    private final DeviceModel deviceModel;
+    private final DeviceService deviceService;
 
     public DeviceController(Vertx vertx) {
-        this.deviceModel = new DeviceModel(vertx);
+        this.deviceService = new DeviceServiceVertxEBProxy(vertx, "services.address");
     }
 
     public void getAllDevices(RoutingContext ctx) {
-        deviceModel.getAllDevices()
+      deviceService.getAllDevices()
             .onSuccess(devices -> {
                 ctx.response()
                     .putHeader("content-type", "application/json")
@@ -39,7 +39,7 @@ public class DeviceController {
             return;
         }
 
-        deviceModel.addDevice(device)
+      deviceService.addDevice(device)
             .onSuccess(v -> {
                 ctx.response()
                     .setStatusCode(201)
@@ -62,7 +62,7 @@ public class DeviceController {
             return;
         }
 
-        deviceModel.updateDevice(deviceId, device)
+      deviceService.updateDevice(deviceId, device)
             .onSuccess(v -> {
                 ctx.response()
                     .setStatusCode(200)
@@ -77,7 +77,7 @@ public class DeviceController {
 
     public void deleteDevice(RoutingContext ctx) {
         String deviceId = ctx.pathParam("id");
-        deviceModel.deleteDevice(deviceId)
+      deviceService.deleteDevice(deviceId)
             .onSuccess(v -> {
                 ctx.response()
                     .setStatusCode(200)
